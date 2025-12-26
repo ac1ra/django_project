@@ -9,6 +9,10 @@ from rest_framework.request import Request
 from .models import Woman
 from .serializer import WomanSerializer
 
+class WomanAPIList(generics.ListCreateAPIView):
+    queryset = Woman.objects.all()
+    serializer_class = WomanSerializer
+    
 class WomanAPIView(APIView):
     
     def get(self, request):

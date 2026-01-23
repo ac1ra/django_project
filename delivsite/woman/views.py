@@ -9,38 +9,21 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from .models import Woman, Category
 from .serializer import WomanSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 
-# class WomanViewSet(viewsets.ModelViewSet):
-# class WomanViewSet(viewsets.ReadOnlyModelViewSet):
-class WomanViewSet(mixins.CreateModelMixin,
-                   mixins.RetrieveModelMixin,
-                   mixins.UpdateModelMixin,
-                #    mixins.DestroyModelMixin,
-                   mixins.ListModelMixin,
-                   GenericViewSet
-                   ):
-   #  queryset =Woman.objects.all()
-    serializer_class=WomanSerializer
-    
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-        if not pk:
-           return Woman.objects.all()[:3]
-        return Woman.objects.filter(pk=pk)
-    @action(methods=['get'],detail=True)
-    def category(self,request,pk=None):
-        cats = Category.objects.get(pk=pk)
-        return Response({'cats':cats.name})
+class WomanAPIList(generics.ListCreateAPIView):
+    queryset = Woman.objects.all()
+    serializer_class = WomanSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
-# class WomanAPIList(generics.ListCreateAPIView):
-#     queryset = Woman.objects.all()
-#     serializer_class = WomanSerializer
-    
-
-# class WomanAPIUpdate(generics.UpdateAPIView):
-#     queryset = Woman.objects.all()
-#     serializer_class = WomanSerializer
-
-# class WomanAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Woman.objects.all()
-#     serializer_class = WomanSerializer
+class WomanAPIUpdate(generics.RetrieveUpdateAPIView):
+    queryset = Woman.objects.all()
+    serializer_class = WomanSerializer
+    permission_classes = (IsAuthenticated,)
+    # authentication_classes = (TokenAuthentication,)
+class WomanAPIDestroy(generics.RetrieveDestroyAPIView):
+    queryset = Woman.objects.all()
+    serializer_class = WomanSerializer
+    permission_classes = (IsAdminOrReadOnly,)

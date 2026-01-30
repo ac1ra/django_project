@@ -22,7 +22,7 @@ class WomanAPIUpdate(generics.RetrieveUpdateAPIView):
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
     permission_classes = (IsAuthenticated,)
-    # authentication_classes = (TokenAuthentication,)
+    authentication_classes = (TokenAuthentication,)
 class WomanAPIDestroy(generics.RetrieveDestroyAPIView):
     queryset = Woman.objects.all()
     serializer_class = WomanSerializer
